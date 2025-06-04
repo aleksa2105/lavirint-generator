@@ -1,25 +1,23 @@
 #pragma once
 #include <vector>
-#include "../matrix_generator/MatrixGenerator.h"
+#include "../maze_generator/MazeGenerator.h"
 #include "../common/Position.h"
 
 class Maze {
 public:
     /* constructor */
-    Maze(Settings settings)
-        : m_matrixData{ MatrixGenerator::generate(settings) }
-    {
-    }
+    explicit Maze(MazeGenerator::MazeData data);
 
     /* methods */
+    friend std::ostream& operator<< (std::ostream& out, const Maze& maze);
 
     /* access methods */
-    int numRows() const { return m_matrixData.matrix.size(); }
-    int numCols() const { return m_matrixData.matrix[0].size(); }
-    Position enterPos() const { return m_matrixData.enter; }
-    Position exitPos() const { return m_matrixData.exit; }
+    int numRows() const { return m_data.matrix.size(); }
+    int numCols() const { return m_data.matrix[0].size(); }
+    Position enterPos() const { return m_data.enter; }
+    Position exitPos() const { return m_data.exit; }
 
 private:
     /* data */
-    MatrixGenerator::Data m_matrixData;
+    MazeGenerator::MazeData m_data;
 };

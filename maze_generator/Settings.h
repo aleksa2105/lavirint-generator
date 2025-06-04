@@ -3,14 +3,16 @@
 
 /* Define your settings here */
 
-constexpr int minRows{ 15 };
-constexpr int maxRows{ 75 };
+constexpr int g_minRows{ 15 };
+constexpr int g_maxRows{ 75 };
 
-constexpr int minCols{ 15 };
-constexpr int maxCols{ 75 };
+constexpr int g_minCols{ 15 };
+constexpr int g_maxCols{ 75 };
 
-constexpr int minItems{ 3 };
-constexpr int maxItems{ 30 };
+constexpr int g_minItems{ 3 };
+constexpr int g_maxItems{ 30 };
+
+constexpr int g_consoleLines{ 25 }; // number of new lines for console clearing
 
 /* ------------------------- */
 
@@ -30,9 +32,9 @@ inline Settings handleArguments(int argc, char* argv[]) {
         int numCols{ std::stoi(argv[2]) };
         int numItems{ std::stoi(argv[3]) };
 
-        if (numRows > maxRows || numRows < minRows ||
-            numCols > maxCols || numCols < minCols ||
-            numItems > maxItems || numItems < minItems) {
+        if (numRows > g_maxRows || numRows < g_minRows ||
+            numCols > g_maxCols || numCols < g_minCols ||
+            numItems > g_maxItems || numItems < g_minItems) {
             throw std::out_of_range("Error: Argument out of bounds");
         }
 
