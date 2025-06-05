@@ -33,8 +33,7 @@ MazeData MazeGenerator::generate() {
         if (!dir.has_value()) // no direction is available for position
             backtrack.pop();
         else {
-            pos.x += dir.value().dx;
-            pos.y += dir.value().dy;
+            pos += dir.value();
             carvePath(pos, dir.value());
             backtrack.push(pos);
         }

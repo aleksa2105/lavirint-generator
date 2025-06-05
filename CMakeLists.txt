@@ -18,6 +18,8 @@ add_executable(maze main.cpp
 
     io/CLI.h
     io/CLI.cpp
+    io/FileManager.h
+    io/FileManager.cpp
 
     maze/Maze.h
     maze/Maze.cpp

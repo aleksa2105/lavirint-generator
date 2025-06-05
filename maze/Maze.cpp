@@ -1,5 +1,6 @@
 #include "Maze.h"
 #include <ostream>
+#include <fstream>
 #include "../utils/Utils.h"
 
 
@@ -33,11 +34,21 @@ std::ostream& operator<< (std::ostream& out, const Maze& maze) {
     for (int i{ 0 }; i < g_consoleLines; ++i)
         out << '\n';
 
-    for (int row{ 0 }; row < maze.numRows(); ++row) {
-        for (int col{ 0 }; col < maze.numCols(); ++col) {
-            Cell cellType = maze.m_data.matrix[row][col];
-            out << Utils::cellTypeColor(cellType) << cellToChar(cellType) << Utils::cellTypeColor(cellType);
-            out << ' ';
+    for (int y{ 0 }; y < maze.numRows(); ++y) {
+        for (int x{ 0 }; x < maze.numCols(); ++x) {
+            Cell cellType = maze.cellAt({ x, y });
+            out << Utils::cellTypeColor(cellType) << cellToChar(cellType) << RESET << ' ';
+        }
+        out << '\n';
+    }
+    return out;
+}
+
+std::ofstream& operator<< (std::ofstream& out, const Maze& maze) {
+    for (int y{ 0 }; y < maze.numRows(); ++y) {
+        for (int x{ 0 }; x < maze.numCols(); ++x) {
+            Cell cell{ maze.cellAt({ x, y }) };
+            out << cellToChar(cell) << ' ';
         }
         out << '\n';
     }

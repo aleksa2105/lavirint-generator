@@ -11,6 +11,12 @@ struct Position {
         return { x + other.x, y + other.y };
     }
 
+    Position& operator+=(const Direction& dir) {
+        x += dir.dx;
+        y += dir.dy;
+        return *this;
+    }
+
     bool operator==(const Position& other) {
         return x == other.x && y == other.y;
     }

@@ -7,16 +7,23 @@
 #include "../common/Direction.h"
 #include "../io/CLI.h"
 #include "../utils/Random.h"
+#include "../io/FileManager.h"
 
 
 class Game {
 public:
-    Game(int argc, char* argv[]);
+    Game(int argc, char* argv[], std::string_view fileName);
 
     // main game loop
     void run();
 
+    bool running() const { return m_state == GameState::running; }
+
     void exit();
+
+    void robotTurn();
+
+    void minotaurTurn();
 
     // return direction if valid input
     std::optional<Direction> directionFromInput(char c);
@@ -39,4 +46,5 @@ private:
     Maze m_maze;
     Robot m_robot;
     Minotaur m_minotaur;
+    FileManager m_fileManager;
 };

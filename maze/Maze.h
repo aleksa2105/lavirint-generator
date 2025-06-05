@@ -22,6 +22,7 @@ public:
     void updateCell(Position pos, Cell cell);
 
     friend std::ostream& operator<< (std::ostream& out, const Maze& maze);
+    friend std::ofstream& operator<< (std::ofstream& out, const Maze& maze);
 
     /* access methods */
     int numRows() const { return m_data.matrix.size(); }
@@ -31,6 +32,7 @@ public:
     Position enterPos() const { return m_data.enter; }
     Position exitPos() const { return m_data.exit; }
     double generationTime() { return m_data.generationTime; }
+    Cell cellAt(Position pos) const { return m_data.matrix[pos.y][pos.x]; }
 
 private: /* data */
 

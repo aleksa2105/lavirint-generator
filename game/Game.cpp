@@ -1,48 +1,94 @@
 #include "Game.h"
 #include "../utils/Random.h"
+#include "../io/FileManager.h"
 #include <iostream>
 
-Game::Game(int argc, char* argv[])
+Game::Game(int argc, char* argv[], std::string_view fileName)
     : m_state{ GameState::running }
     , m_mazeGenerator{ Settings{handleArguments(argc, argv)} }
     , m_maze{ m_mazeGenerator.generate() }
     , m_robot{ getRobotPosition(m_maze.enterPos()) }
     , m_minotaur{ getMinotaurPosition(m_maze.numRows(), m_maze.numCols()) }
+    , m_fileManager{ fileName }
 {
     m_maze.updateCell(m_robot.pos(), Cell::robot);
     m_maze.updateCell(m_minotaur.pos(), Cell::minotaur);
 }
 
 void Game::run() {
-    while (true) {
+    while (running()) {
         CLI::display(m_maze);
 
-        char userInput{ CLI::getUserInput() };
+        robotTurn();
+        if (!running())
+            break;
 
-        if (userInput == 'q' || userInput == 'Q') {
-            m_state = GameState::user_exit;
-            exit();
-        }
-
-        std::optional<Direction> dir{ directionFromInput(userInput) };
-        if (!dir.has_value()) {
-            std::cout << "Invalid input\n";
-        }
-        else {
-            Position newPos{ m_robot.pos() + dir.value() };
-            if (m_robot.canMoveTo(m_maze, newPos)) {
-                m_maze.swapCells(m_robot.pos(), newPos);
-                m_robot.updatePosition(newPos);
-            }
-        }
+        minotaurTurn();
     }
+    exit();
 }
 
 void Game::exit() {
     CLI::display(m_maze);
     std::cout << "Exited with state: " << gameStateStr(m_state) << '\n';
 
+    // save to file
+    m_fileManager.save(m_maze);
+    m_fileManager.save("GENERATION-TIME: " + std::to_string(m_maze.generationTime()));
+
     std::exit(EXIT_SUCCESS);
+}
+
+void Game::robotTurn() {
+    char userInput{ CLI::getUserInput() };
+
+    if (userInput == 'q' || userInput == 'Q') {
+        m_state = GameState::user_exit;
+        exit();
+    }
+
+    std::optional<Direction> dir{ directionFromInput(userInput) };
+    if (!dir.has_value()) {
+        std::cout << "Invalid input\n";
+    }
+    else {
+        Position newPos{ m_robot.pos() + dir.value() };
+        if (m_robot.canMoveTo(m_maze, newPos)) {
+            m_maze.swapCells(m_robot.pos(), newPos);
+            m_robot.updatePosition(newPos);
+        }
+    }
+}
+
+void Game::minotaurTurn() {
+    int minotaurX{ m_minotaur.pos().x };
+    int minotaurY{ m_minotaur.pos().y };
+    int robotX{ m_robot.pos().x };
+    int robotY{ m_robot.pos().y };
+
+    // try to kill robot if near
+    if ((abs(minotaurX - robotX) == 1 && abs(minotaurY - robotY) == 0) || (abs(minotaurX - robotX) == 0 && abs(minotaurY - robotY) == 1)) {
+        m_state = GameState::minotaur_won;
+        m_maze.updateCell(m_robot.pos(), Cell::minotaur);
+        m_maze.updateCell(m_minotaur.pos(), Cell::passage);
+    }
+
+    // add all available directions to vector and select one randomly
+    std::vector<Direction> availableDir{};
+    Position curPos{ m_minotaur.pos() };
+    if (m_minotaur.canMoveTo(m_maze, curPos + Direction{ 0, -1 })) availableDir.emplace_back(0, -1); // north
+    if (m_minotaur.canMoveTo(m_maze, curPos + Direction{ 0, 1 })) availableDir.emplace_back(0, 1); // south
+    if (m_minotaur.canMoveTo(m_maze, curPos + Direction{ -1, 0 })) availableDir.emplace_back(-1, 0); // west
+    if (m_minotaur.canMoveTo(m_maze, curPos + Direction{ 1, 0 })) availableDir.emplace_back(1, 0); // east
+
+    // randomly select direction
+    int randIdx = Random::get(0, static_cast<int>(availableDir.size()) - 1);
+    Direction dir = availableDir[randIdx];
+    Position newPos{ curPos + dir };
+
+    // update maze and minotaur data
+    m_maze.swapCells(curPos, newPos);
+    m_minotaur.updatePosition(newPos);
 }
 
 std::optional<Direction> Game::directionFromInput(char c) {
