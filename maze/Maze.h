@@ -16,8 +16,9 @@ public:
     int numCols() const { return m_data.matrix[0].size(); }
     Position enterPos() const { return m_data.enter; }
     Position exitPos() const { return m_data.exit; }
+    double generationTime() { return m_data.generationTime; }
 
-private:
-    /* data */
+private: /* data */
+
     MazeGenerator::MazeData m_data;
 };

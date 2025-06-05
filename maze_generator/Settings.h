@@ -22,9 +22,10 @@ struct Settings {
     int numItems{};
 };
 
+// function used to check validity and create settings from console line arguments
 inline Settings handleArguments(int argc, char* argv[]) {
     if (argc != 4) {
-        throw std::invalid_argument("Error: Invalid number of arguments (4 expected)");
+        throw std::invalid_argument("Error: Invalid number of arguments (4 expected: executable, number of rows, number of columns, number of items)");
     }
 
     try {
@@ -35,12 +36,12 @@ inline Settings handleArguments(int argc, char* argv[]) {
         if (numRows > g_maxRows || numRows < g_minRows ||
             numCols > g_maxCols || numCols < g_minCols ||
             numItems > g_maxItems || numItems < g_minItems) {
-            throw std::out_of_range("Error: Argument out of bounds");
+            throw std::out_of_range("Error: Argument out of bounds (lookup maze_generator/Settings.h for valid argument values)");
         }
 
         return Settings{ numRows, numCols, numItems };
     }
     catch (const std::invalid_argument&) {
-        throw std::invalid_argument("Error: Invalid type of arguments (integer expected)");
+        throw std::invalid_argument("Error: Invalid type of arguments (integers expected)");
     }
 }

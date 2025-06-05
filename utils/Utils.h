@@ -9,6 +9,7 @@ namespace Utils {
         case Cell::robot: return YELLOW;
         case Cell::item: return CYAN;
         case Cell::minotaur: return RED;
+        case Cell::wall: return MAGENTA;
         default: return RESET;
         }
     }

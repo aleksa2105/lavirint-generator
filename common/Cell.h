@@ -18,18 +18,17 @@ inline char cellToChar(Cell cell)
     case Cell::wall:
         return '#';
     case Cell::passage:
-        return ' ';
+        return '.';
     case Cell::enter:
         return 'E';
     case Cell::exit:
         return 'X';
     case Cell::item:
-        return '*';
+        return '?';
     case Cell::robot:
         return 'R';
     case Cell::minotaur:
         return 'M';
-    default:
-        return '?';
+    default: return '?';
     }
 }

@@ -13,7 +13,7 @@ MazeGenerator::MazeGenerator(Settings settings)
 MazeGenerator::MazeData MazeGenerator::generate() {
     const auto startTime = std::chrono::system_clock::now(); // track generation time
 
-    // randomly select position for enterance
+    // randomly select position for entrance
     m_data.enter = Position{ Random::get(1, m_settings.numCols - 2), 0 };
     m_data.matrix[m_data.enter.y][m_data.enter.x] = Cell::enter;
 
@@ -23,15 +23,14 @@ MazeGenerator::MazeData MazeGenerator::generate() {
 
     std::stack<Position> backtrack;
 
-    Position startPos{ m_data.enter.x, 1 }; // starting position for generating passages
+    Position startPos{ m_data.enter.x, 1 }; // starting position for generating passages (bellow the entrance)
     backtrack.push(startPos);
-    // addPath(startPos, Direction{ 0, 0 });
 
     while (!backtrack.empty()) {
         Position pos{ backtrack.top() };
         std::optional<Direction> dir{ randomDirection(pos) };
 
-        if (!dir.has_value()) // no direction was available for that position
+        if (!dir.has_value()) // no direction is available for position
             backtrack.pop();
         else {
             pos.x += dir.value().dx;
@@ -45,7 +44,7 @@ MazeGenerator::MazeData MazeGenerator::generate() {
     placeItems();
 
     const auto endTime{ std::chrono::system_clock::now() }; // mark time
-    m_data.generationTime = std::chrono::duration(endTime - startTime).count();
+    m_data.generationTime = std::chrono::duration<double>(endTime - startTime).count();
 
     return m_data;
 }
@@ -62,8 +61,8 @@ std::optional<Direction> MazeGenerator::randomDirection(Position pos) {
     if (isValidDirection(Position{ pos.x - 2, pos.y })) { directions.emplace_back(-2, 0); } // west
     if (isValidDirection(Position{ pos.x + 2, pos.y })) { directions.emplace_back(2, 0); } // east
 
-    if (directions.empty()) {
-        // no directions are available
+    if (directions.empty()) { // no directions are available
+
         return std::nullopt;
     }
 
@@ -71,8 +70,10 @@ std::optional<Direction> MazeGenerator::randomDirection(Position pos) {
 }
 
 bool MazeGenerator::isValidDirection(Position pos) {
+    // check boundaries
     if (pos.x <= 0 || pos.y <= 0 || pos.x >= m_data.matrix[0].size() - 1 || pos.y >= m_data.matrix.size() - 1)
         return false;
+    // if new position is not a wall, it means that passage is already carved there
     if (m_data.matrix[pos.y][pos.x] != Cell::wall)
         return false;
 
@@ -88,8 +89,7 @@ void MazeGenerator::placeItems() {
 }
 
 void MazeGenerator::carveAdditionalPassages() {
-    const int dx[] = { 0, 1, 0, -1 };
-    const int dy[] = { -1, 0, 1, 0 };
+    const int dir[] = { 1, -1 };
 
     for (int x = 1; x < m_settings.numCols - 1; ++x) {
         // open a passage in the second-to-last row
@@ -99,10 +99,11 @@ void MazeGenerator::carveAdditionalPassages() {
         int randX = Random::get(2, m_settings.numCols - 3);
         int randY = Random::get(2, m_settings.numRows - 3);
 
-        // choose a random direction (up, right, down, left)
-        int dir = Random::get(0, 3);
+        // choose a random direction
+        int r = Random::get(0, 1);
 
         m_data.matrix[randY][randX] = Cell::passage;
-        m_data.matrix[randY + dy[dir]][randX + dx[dir]] = Cell::passage;
+        m_data.matrix[randY + dir[r]][randX + dir[r]] = Cell::passage;
+        m_data.matrix[randY][randX + dir[r]] = Cell::passage;
     }
 }
