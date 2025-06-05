@@ -1,22 +1,14 @@
 #pragma once
-#include <vector>
-#include "Settings.h"
 #include <optional>
-#include "../common/Cell.h"
+#include "Settings.h"
 #include "../common/Position.h"
 #include "../common/Direction.h"
+#include "MazeData.h"
 
 
 class MazeGenerator {
 public:
     explicit MazeGenerator(Settings settings);
-
-    struct MazeData {
-        std::vector<std::vector<Cell>> matrix;
-        Position enter;
-        Position exit;
-        double generationTime{};
-    };
 
     // Generate using backtracking algorithm
     MazeData generate();

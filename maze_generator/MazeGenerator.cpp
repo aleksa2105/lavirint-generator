@@ -10,7 +10,7 @@ MazeGenerator::MazeGenerator(Settings settings)
     m_data.matrix = std::vector(settings.numRows, std::vector(settings.numCols, Cell::wall)); // initially fill with walls
 }
 
-MazeGenerator::MazeData MazeGenerator::generate() {
+MazeData MazeGenerator::generate() {
     const auto startTime = std::chrono::system_clock::now(); // track generation time
 
     // randomly select position for entrance
