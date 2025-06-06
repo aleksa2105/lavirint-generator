@@ -15,12 +15,13 @@ public:
     /* methods */
     bool isValidMove(Position pos);
 
-    void swapCells(Position cellPos1, Position cellPos2);
+    void updateCells(Position cellPos1, Position cellPos2);
 
     void updateCell(Position pos, Cell cell);
 
     friend std::ostream& operator<< (std::ostream& out, const Maze& maze);
     friend std::ofstream& operator<< (std::ofstream& out, const Maze& maze);
+    Cell& operator[](const Position& pos);
 
     /* access methods */
     int numRows() const { return m_data.matrix.size(); }

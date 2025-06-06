@@ -9,7 +9,7 @@ Maze::Maze(MazeData data)
 }
 
 bool Maze::isValidMove(Position pos) {
-    Cell cell{ m_data.matrix[pos.y][pos.x] };
+    Cell cell{ (*this)[pos] };
 
     if (pos.x <= 0 || pos.y <= 0 || pos.x >= borderX() || pos.y >= borderY()) // out of maze bounds
         return false;
@@ -19,14 +19,33 @@ bool Maze::isValidMove(Position pos) {
     return true;
 }
 
-void Maze::swapCells(Position cellPos1, Position cellPos2) {
-    Cell temp{ m_data.matrix[cellPos1.y][cellPos1.x] };
-    m_data.matrix[cellPos1.y][cellPos1.x] = m_data.matrix[cellPos2.y][cellPos2.x];
-    m_data.matrix[cellPos2.y][cellPos2.x] = temp;
+void Maze::updateCells(Position cellPos1, Position cellPos2) {
+    Cell& cell1{ (*this)[cellPos1] };
+    Cell& cell2{ (*this)[cellPos2] };
+
+    // cell2 is entity
+    if (cell1 == Cell::item || cell1 == Cell::exit) {
+        cell1 = cell2;
+        cell2 = Cell::passage;
+    }
+    // cell1 is entity
+    else if (cell2 == Cell::item || cell2 == Cell::exit) {
+        cell2 = cell1;
+        cell1 = Cell::passage;
+    }
+    else {
+        Cell temp{ cell1 };
+        cell1 = cell2;
+        cell2 = temp;
+    }
 }
 
 void Maze::updateCell(Position pos, Cell cell) {
-    m_data.matrix[pos.y][pos.x] = cell;
+    (*this)[pos] = cell;
+}
+
+Cell& Maze::operator[](const Position& pos) {
+    return m_data.matrix[pos.y][pos.x];
 }
 
 std::ostream& operator<< (std::ostream& out, const Maze& maze) {

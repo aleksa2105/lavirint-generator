@@ -7,8 +7,8 @@ Game::Game(int argc, char* argv[], std::string_view fileName)
     : m_state{ GameState::running }
     , m_mazeGenerator{ Settings{handleArguments(argc, argv)} }
     , m_maze{ m_mazeGenerator.generate() }
-    , m_robot{ getRobotPosition(m_maze.enterPos()) }
-    , m_minotaur{ getMinotaurPosition(m_maze.numRows(), m_maze.numCols()) }
+    , m_robot{ Helper::getRobotPosition(m_maze.enterPos()) }
+    , m_minotaur{ Helper::getMinotaurPosition(m_maze.numRows(), m_maze.numCols()) }
     , m_fileManager{ fileName }
 {
     // place entities
@@ -43,12 +43,12 @@ void Game::exit() {
 void Game::robotTurn() {
     char userInput{ CLI::getUserInput() };
 
-    if (userInput == 'q' || userInput == 'Q') {
+    if (tolower(userInput) == 'q') {
         m_state = GameState::user_exit;
         return;
     }
 
-    std::optional<Direction> dir{ directionFromInput(userInput) };
+    std::optional<Direction> dir{ directionFromChar(userInput) };
     if (!dir.has_value()) {
         std::cout << "Invalid input\n";
     }
@@ -58,8 +58,6 @@ void Game::robotTurn() {
 
             // 1: robot exited the maze
             if (newPos == m_maze.exitPos()) {
-                m_maze.updateCell(newPos, Cell::robot);
-                m_maze.updateCell(m_robot.pos(), Cell::passage);
                 m_state = GameState::robot_won;
             }
             // 2: robot encountered minotaur
@@ -68,10 +66,13 @@ void Game::robotTurn() {
                 m_state = GameState::minotaur_won;
                 return;
             }
-            else {
-                m_maze.swapCells(m_robot.pos(), newPos);
+            // 3. pickup item
+            else if (m_maze.cellAt(newPos) == Cell::item) {
+                m_robot.pickupItem(getRandomItem());
+                std::cout << "You have picked up: " << m_robot.activeItemStr() << '\n';
             }
 
+            m_maze.updateCells(m_robot.pos(), newPos);
             m_robot.updatePosition(newPos);
         }
     }
@@ -105,18 +106,7 @@ void Game::minotaurTurn() {
     Position newPos{ curPos + dir };
 
     // update maze and minotaur data
-    m_maze.swapCells(curPos, newPos);
+    m_maze.updateCells(curPos, newPos);
     m_minotaur.updatePosition(newPos);
 }
 
-std::optional<Direction> Game::directionFromInput(char c) {
-    switch (c)
-    {
-    case 'w': case 'W': return Direction{ 0, -1 }; // north
-    case 'a': case 'A': return Direction{ -1, 0 }; // west
-    case 's': case 'S': return Direction{ 0, 1 }; // south
-    case 'd': case 'D': return Direction{ 1, 0 }; // east
-    default: // wrong input
-        return std::nullopt;
-    }
-}

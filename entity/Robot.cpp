@@ -9,3 +9,10 @@ bool Robot::canMoveTo(Maze& maze, Position newPos) {
 
     return false;
 }
+
+std::string_view Robot::activeItemStr() const {
+    if (m_activeItem) {
+        return m_activeItem->getStr();
+    }
+    return "No active item";
+}
