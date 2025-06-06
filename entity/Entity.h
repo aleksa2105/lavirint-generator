@@ -5,7 +5,7 @@
 
 class Entity {
 public:
-    // return true if entity can move to given position
+    // return true if entity can move to the given position
     virtual bool canMoveTo(Maze& maze, Position newPos) = 0;
 
     void updatePosition(Position newPos) { m_pos = newPos; }
@@ -18,6 +18,7 @@ protected:
         : m_pos{ pos }, m_isAlive{ true } {
     }
     ~Entity() = default;
+
 private:
     Position m_pos;
     bool m_isAlive{ true };

@@ -4,8 +4,6 @@
 #include "../maze_generator/MazeData.h"
 #include "../common/Position.h"
 
-// forward declaration
-class Robot;
 
 class Maze {
 public:
@@ -35,6 +33,5 @@ public:
     Cell cellAt(Position pos) const { return m_data.matrix[pos.y][pos.x]; }
 
 private: /* data */
-
     MazeData m_data;
 };

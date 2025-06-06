@@ -11,6 +11,7 @@ Game::Game(int argc, char* argv[], std::string_view fileName)
     , m_minotaur{ getMinotaurPosition(m_maze.numRows(), m_maze.numCols()) }
     , m_fileManager{ fileName }
 {
+    // place entities
     m_maze.updateCell(m_robot.pos(), Cell::robot);
     m_maze.updateCell(m_minotaur.pos(), Cell::minotaur);
 }
@@ -44,7 +45,7 @@ void Game::robotTurn() {
 
     if (userInput == 'q' || userInput == 'Q') {
         m_state = GameState::user_exit;
-        exit();
+        return;
     }
 
     std::optional<Direction> dir{ directionFromInput(userInput) };
@@ -54,7 +55,23 @@ void Game::robotTurn() {
     else {
         Position newPos{ m_robot.pos() + dir.value() };
         if (m_robot.canMoveTo(m_maze, newPos)) {
-            m_maze.swapCells(m_robot.pos(), newPos);
+
+            // 1: robot exited the maze
+            if (newPos == m_maze.exitPos()) {
+                m_maze.updateCell(newPos, Cell::robot);
+                m_maze.updateCell(m_robot.pos(), Cell::passage);
+                m_state = GameState::robot_won;
+            }
+            // 2: robot encountered minotaur
+            else if (newPos == m_minotaur.pos()) {
+                m_maze.updateCell(m_robot.pos(), Cell::passage);
+                m_state = GameState::minotaur_won;
+                return;
+            }
+            else {
+                m_maze.swapCells(m_robot.pos(), newPos);
+            }
+
             m_robot.updatePosition(newPos);
         }
     }
@@ -68,9 +85,10 @@ void Game::minotaurTurn() {
 
     // try to kill robot if near
     if ((abs(minotaurX - robotX) == 1 && abs(minotaurY - robotY) == 0) || (abs(minotaurX - robotX) == 0 && abs(minotaurY - robotY) == 1)) {
-        m_state = GameState::minotaur_won;
         m_maze.updateCell(m_robot.pos(), Cell::minotaur);
         m_maze.updateCell(m_minotaur.pos(), Cell::passage);
+        m_state = GameState::minotaur_won;
+        return;
     }
 
     // add all available directions to vector and select one randomly

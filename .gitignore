@@ -6,3 +6,4 @@ build/
 *.exe
 *.tmp
 *.log
+*.txt

@@ -61,7 +61,6 @@ std::optional<Direction> MazeGenerator::randomDirection(Position pos) {
     if (isValidDirection(Position{ pos.x + 2, pos.y })) { directions.emplace_back(2, 0); } // east
 
     if (directions.empty()) { // no directions are available
-
         return std::nullopt;
     }
 

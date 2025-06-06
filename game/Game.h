@@ -33,7 +33,7 @@ public: /* Helper functions for setting up game */
     // being said that robot is placed one cell bellow entrance, we need enter position
     static Position getRobotPosition(Position enterPos) { return { enterPos.x, enterPos.y + 1 }; }
 
-    // we need size of maze to randomly place minotaur
+    // we need size of the maze to randomly place minotaur
     static Position getMinotaurPosition(int numRows, int numCols) {
         int x{ Random::get(1, numCols - 2) }; // pick x in safe bounds
         int y{ Random::get(numRows / 2, numRows - 2) }; // we will place minotaur on lower half of maze
