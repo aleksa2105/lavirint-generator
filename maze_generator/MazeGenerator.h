@@ -10,6 +10,8 @@ class MazeGenerator {
 public:
     explicit MazeGenerator(Settings settings);
 
+    int a;
+
     // Generate using backtracking algorithm
     MazeData generate();
 
