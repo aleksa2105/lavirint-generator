@@ -21,6 +21,10 @@ struct Position {
         return x == other.x && y == other.y;
     }
 
+    bool operator!=(const Position& other) {
+        return !(*this == other);
+    }
+
     int x{};
     int y{};
 };

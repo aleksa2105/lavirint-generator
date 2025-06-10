@@ -5,21 +5,25 @@
 
 class Entity {
 public:
-    // return true if entity can move to the given position
-    virtual bool canMoveTo(Maze& maze, Position newPos) = 0;
+    // return true if entity can move to given position
+    virtual bool canMoveTo(Position newPos) = 0;
 
-    void updatePosition(Position newPos) { m_pos = newPos; }
+    void setPosition(Position newPos) { m_pos = newPos; }
+
+    void kill() { m_isAlive = false; }
 
     Position pos() const { return m_pos; }
+    bool isAlive() const { return m_isAlive; }
 
 protected:
     // make it not possible to instantiate Entity
     Entity(Position pos)
         : m_pos{ pos }, m_isAlive{ true } {
     }
+    Entity() = default;
     ~Entity() = default;
 
-private:
+protected:
     Position m_pos;
     bool m_isAlive{ true };
 };

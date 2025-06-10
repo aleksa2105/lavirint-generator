@@ -7,7 +7,9 @@ public:
         : Item{ Type::fog } {
     }
 
-    std::string_view getStr() override {
+    void use(Position pos) override;
+
+    std::string_view getStr() const override {
         return "Fog";
     }
 

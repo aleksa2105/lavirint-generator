@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include "../maze_generator/MazeGenerator.h"
-#include "../maze_generator/MazeData.h"
 #include "../common/Position.h"
 
 
@@ -19,6 +18,8 @@ public:
 
     void updateCell(Position pos, Cell cell);
 
+    bool isWithinBounds(Position pos) const;
+
     friend std::ostream& operator<< (std::ostream& out, const Maze& maze);
     friend std::ofstream& operator<< (std::ofstream& out, const Maze& maze);
     Cell& operator[](const Position& pos);
@@ -32,6 +33,7 @@ public:
     Position exitPos() const { return m_data.exit; }
     double generationTime() { return m_data.generationTime; }
     Cell cellAt(Position pos) const { return m_data.matrix[pos.y][pos.x]; }
+    void setData(MazeData data) { m_data = std::move(data); }
 
 private: /* data */
     MazeData m_data;

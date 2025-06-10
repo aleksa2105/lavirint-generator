@@ -2,6 +2,8 @@
 #include <ostream>
 #include <fstream>
 #include "../utils/Utils.h"
+#include "../game/Game.h"
+#include "../item/Fog.h"
 
 
 Maze::Maze(MazeData data)
@@ -11,7 +13,7 @@ Maze::Maze(MazeData data)
 bool Maze::isValidMove(Position pos) {
     Cell cell{ (*this)[pos] };
 
-    if (pos.x <= 0 || pos.y <= 0 || pos.x >= borderX() || pos.y >= borderY()) // out of maze bounds
+    if (!isWithinBounds(pos)) // out of maze bounds
         return false;
     if (cell == Cell::wall)
         return false;
@@ -44,19 +46,33 @@ void Maze::updateCell(Position pos, Cell cell) {
     (*this)[pos] = cell;
 }
 
+bool Maze::isWithinBounds(Position pos) const {
+    if (pos.x <= 0 || pos.y <= 0 || pos.x >= borderX() || pos.y >= borderY()) // out of maze bounds
+        return false;
+
+    return true;
+}
+
 Cell& Maze::operator[](const Position& pos) {
     return m_data.matrix[pos.y][pos.x];
 }
 
 std::ostream& operator<< (std::ostream& out, const Maze& maze) {
     // clear console
-    for (int i{ 0 }; i < g_consoleLines; ++i)
-        out << '\n';
+    // for (int i{ 0 }; i < g_consoleLines; ++i)
+    //     out << '\n';
+
+    Robot& robot{ Game::robot() };
 
     for (int y{ 0 }; y < maze.numRows(); ++y) {
         for (int x{ 0 }; x < maze.numCols(); ++x) {
-            Cell cellType = maze.cellAt({ x, y });
-            out << Utils::cellTypeColor(cellType) << cellToChar(cellType) << RESET << ' ';
+            if (dynamic_cast<Fog*>(robot.activeItem()) && (abs(robot.pos().x - x) > 1 || abs(robot.pos().y - y) > 1)) {
+                out << Utils::cellTypeColor(Cell::wall) << cellToChar(Cell::wall) << RESET << ' ';
+            }
+            else {
+                Cell cellType = maze.cellAt({ x, y });
+                out << Utils::cellTypeColor(cellType) << cellToChar(cellType) << RESET << ' ';
+            }
         }
         out << '\n';
     }

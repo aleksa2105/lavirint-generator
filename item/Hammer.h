@@ -7,9 +7,9 @@ public:
         : Item{ Type::hammer } {
     }
 
-    std::string_view getStr() override {
-        return "Hammer";
-    }
+    void use(Position pos) override;
+
+    std::string_view getStr() const override { return "Hammer"; }
 
 private:
 };

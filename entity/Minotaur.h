@@ -1,6 +1,6 @@
 #pragma once
 #include "Entity.h"
-#include "../maze/Maze.h"
+#include <iostream>
 
 
 class Minotaur : public Entity {
@@ -9,5 +9,19 @@ public:
         : Entity{ pos } {
     }
 
-    bool canMoveTo(Maze& maze, Position newPos) override;
+    Minotaur() = default;
+
+    bool canMoveTo(Position newPos) override;
+
+    void knockOut() { KODurationLeft = KODuration; }
+    void reduceKODuration() {
+        std::cout << "\nMinotaur is knocked down for " << KOLeft() << " more move(s)\n\n";
+        --KODurationLeft;
+    }
+    bool isKO() const { return KODurationLeft > 0; }
+    int KOLeft() const { return KODurationLeft; }
+
+private:
+    const int KODuration{ 2 };
+    int KODurationLeft{ 0 };
 };

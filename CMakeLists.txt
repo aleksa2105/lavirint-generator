@@ -8,6 +8,10 @@ add_executable(maze main.cpp
     io/CLI.cpp
     io/FileManager.cpp
     item/Item.cpp
+    item/Fog.cpp
+    item/Sword.cpp
+    item/Hammer.cpp
+    item/Shield.cpp
     maze/Maze.cpp
     maze_generator/MazeGenerator.cpp
 )

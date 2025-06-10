@@ -1,7 +1,8 @@
 #include "Minotaur.h"
+#include "../game/Game.h"
 
-bool Minotaur::canMoveTo(Maze& maze, Position newPos) {
-    if (maze.isValidMove(newPos)) {
+bool Minotaur::canMoveTo(Position newPos) {
+    if (Game::maze().isValidMove(newPos)) {
         return true;
     }
 

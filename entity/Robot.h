@@ -1,10 +1,9 @@
 #pragma once 
 
 #include <memory>
-#include "Entity.h"
-#include "../maze/Maze.h"
-#include "../item/Item.h"
 #include <string_view>
+#include "Entity.h"
+#include "../item/Item.h"
 
 
 class Robot : public Entity {
@@ -13,15 +12,18 @@ public:
         : Entity{ pos } {
     }
 
-    bool canMoveTo(Maze& maze, Position newPos) override;
+    Robot() = default;
+
+    bool canMoveTo(Position newPos) override;
 
     void pickupItem(std::unique_ptr<Item> item) {
         m_activeItem = std::move(item);
     }
 
-    void encounterMinotaur();
+    void useItem(Position pos);
 
-    std::string_view activeItemStr() const;
+    /* access methods */
+    Item* activeItem() { return m_activeItem.get(); }
 
 private:
     std::unique_ptr<Item> m_activeItem{ nullptr };

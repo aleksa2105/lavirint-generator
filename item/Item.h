@@ -1,7 +1,7 @@
 #pragma once
 #include <string_view>
 #include <memory>
-
+#include "../common/Position.h"
 
 constexpr int g_itemDuration{ 3 };
 
@@ -17,19 +17,28 @@ public:
         max_types
     };
 
-    Item(Type type)
+    explicit Item(Type type)
         : m_type{ type }, m_duration{ g_itemDuration } {
     }
 
     virtual ~Item() = default;
 
-    virtual std::string_view getStr() = 0;
+    virtual void use(Position pos) = 0;
 
-private:
+    virtual std::string_view getStr() const = 0;
+
+    // return true if duration of item is expired
+    bool isBroken() const { return m_duration <= 0; }
+
+    void reduceDuration() { --m_duration; }
+
+    int duration() const { return m_duration; }
+
+    friend std::ostream& operator<<(std::ostream& out, const Item& item);
+
+protected:
     int m_duration{ g_itemDuration };
     Type m_type;
 };
 
 std::unique_ptr<Item> getRandomItem();
-
-std::string_view itemStr(const Item& item);
