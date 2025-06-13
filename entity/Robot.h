@@ -16,11 +16,13 @@ public:
 
     bool canMoveTo(Position newPos) override;
 
-    void pickupItem(std::unique_ptr<Item> item) {
-        m_activeItem = std::move(item);
-    }
+    void pickupItem(std::unique_ptr<Item> item);
 
     void useItem(Position pos);
+
+    void move(Position pos);
+
+    void defend();
 
     /* access methods */
     Item* activeItem() { return m_activeItem.get(); }

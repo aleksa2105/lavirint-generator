@@ -3,9 +3,7 @@
 #include "../utils/Random.h"
 
 
-namespace Helper {
-
-    /* Helper functions for setting up the game */
+namespace Helper { /* Helper functions for setting up the game */
 
     // position robot one cell below entrance 
     inline Position getRobotPosition(Position enterPos) { return { enterPos.x, enterPos.y + 1 }; }
@@ -13,7 +11,7 @@ namespace Helper {
     // randomly place minotaur in lower half of the maze
     inline Position getMinotaurPosition(int numRows, int numCols) {
         int x{ Random::get(1, numCols - 2) }; // pick x in safe bounds
-        int y{ Random::get(numRows / 2, numRows - 2) }; // we will place minotaur on lower half of maze
+        int y{ Random::get(numRows / 2, numRows - 2) };
         return Position{ x,y };
     }
 }

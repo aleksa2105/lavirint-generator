@@ -4,7 +4,16 @@
 
 
 class Entity {
+protected:
+    // make it not possible to instantiate Entity
+    explicit Entity(Position pos)
+        : m_pos{ pos }, m_isAlive{ true } {
+    }
+    Entity() = default;
+
 public:
+    virtual ~Entity() = default;
+
     // return true if entity can move to given position
     virtual bool canMoveTo(Position newPos) = 0;
 
@@ -14,14 +23,6 @@ public:
 
     Position pos() const { return m_pos; }
     bool isAlive() const { return m_isAlive; }
-
-protected:
-    // make it not possible to instantiate Entity
-    Entity(Position pos)
-        : m_pos{ pos }, m_isAlive{ true } {
-    }
-    Entity() = default;
-    ~Entity() = default;
 
 protected:
     Position m_pos;

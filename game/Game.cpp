@@ -4,10 +4,10 @@
 #include <iostream>
 #include "../item/Sword.h"
 #include "../item/Shield.h"
+#include "../io/FileManager.h"
 
-Game::Game(int argc, char* argv[], std::string_view fileName)
+Game::Game(int argc, char* argv[])
     : m_mazeGenerator{ Settings{handleArguments(argc, argv)} }
-    , m_fileManager{ fileName }
 {
     init();
 }
@@ -17,6 +17,7 @@ Maze Game::s_maze;
 Robot Game::s_robot;
 Minotaur Game::s_minotaur;
 
+/* Setup maze */
 void Game::init() {
     s_maze.setData(m_mazeGenerator.generate());
     s_robot.setPosition(Helper::getRobotPosition(s_maze.enterPos()));
@@ -29,67 +30,46 @@ void Game::init() {
 void Game::run() {
     while (running()) {
         CLI::display(s_maze);
+
         robotTurn();
+        if (!running())
+            exit();
         minotaurTurn();
     }
     exit();
 }
 
 bool Game::running() const {
-    return s_robot.isAlive() || s_robot.pos() != s_maze.exitPos();
+    return s_robot.isAlive() && s_robot.pos() != s_maze.exitPos();
 }
 
 void Game::exit() {
     CLI::display(s_maze);
 
+    FileManager fileManager{ "output.txt" };
+
     // save to file
-    m_fileManager.save(s_maze);
-    m_fileManager.save("GENERATION-TIME: " + std::to_string(s_maze.generationTime()));
+    fileManager.save(s_maze);
+    fileManager.save("GENERATION-TIME: " + std::to_string(s_maze.generationTime()));
 
     std::exit(EXIT_SUCCESS);
 }
 
 void Game::robotTurn() {
-    // prompt user until valid input
-    while (true) {
-        char userInput{ CLI::getUserInput() };
+    char userInput{ CLI::getUserInput() };
 
-        if (tolower(userInput) == 'q') { exit(); }
+    if (tolower(userInput) == 'q') { exit(); }
 
-        std::optional<Direction> dir{ directionFromChar(userInput) };
+    std::optional<Direction> dir{ directionFromChar(userInput) };
 
-        if (dir) {
-            Position newPos{ s_robot.pos() + dir.value() };
-            s_robot.useItem(newPos);
-            if (s_robot.canMoveTo(newPos)) {
-                Cell cell{ s_maze.cellAt(newPos) };
-                if (cell == Cell::item) {
-                    s_robot.pickupItem(getRandomItem());
-                    std::cout << "\nYou have picked up: " << s_robot.activeItem()->getStr() << '\n';
-                }
-                else if (cell == Cell::minotaur && !s_minotaur.isKO() && s_minotaur.isAlive()) {
-                    s_robot.kill();
-                    s_maze.updateCell(s_robot.pos(), Cell::passage);
-                    std::cout << "\nYou have died. GG\n";
-                    exit();
-                }
-                else if (cell == Cell::exit) {
-                    std::cout << "\nYou have won!!\n";
-                    s_maze.updateCells(s_robot.pos(), newPos);
-                    exit();
-                }
-                else if (cell == Cell::minotaur && s_minotaur.isKO()) {
-                    return;
-                }
-
-                s_maze.updateCells(s_robot.pos(), newPos);
-                s_robot.setPosition(newPos);
-                return;
-            }
-        }
-        else {
-            std::cout << "\nInvalid input\n";
-        }
+    if (dir) {
+        Position newPos{ s_robot.pos() + dir.value() };
+        // before moving let item do its job
+        s_robot.useItem(newPos);
+        s_robot.move(newPos);
+    }
+    else {
+        std::cout << "\nInvalid input\n";
     }
 }
 
@@ -99,7 +79,7 @@ void Game::minotaurTurn() {
         s_minotaur.reduceKODuration();
         return;
     }
-    if (!s_minotaur.isAlive()) {
+    if (!s_minotaur.isAlive() || !s_robot.isAlive()) {
         return;
     }
 
@@ -110,22 +90,15 @@ void Game::minotaurTurn() {
 
     // try to kill robot if near
     if ((abs(minotaurX - robotX) == 1 && abs(minotaurY - robotY) == 0) || (abs(minotaurX - robotX) == 0 && abs(minotaurY - robotY) == 1)) {
-        if (s_robot.activeItem() && dynamic_cast<Sword*>(s_robot.activeItem())) {
-            s_minotaur.kill();
-            s_maze.updateCell(s_minotaur.pos(), Cell::passage);
-            std::cout << "\nMinotaur tried to attack you, but failed... \nLocate the exit to win!\n";
-            return;
-        }
-        if (s_robot.activeItem() && dynamic_cast<Shield*>(s_robot.activeItem())) {
-            s_minotaur.knockOut();
-            std::cout << "\nMinotaur tried to attack you, but got stunned by your shield...\n";
-            std::cout << "Try to escape while you can ;)\n\n";
-            return;
-        }
+        s_robot.defend();
 
+        if (!s_minotaur.isAlive() || s_minotaur.isKO())
+            // robot defended successfully
+            return;
+
+        // robot failed to defend. update maze cells and return
         s_maze.updateCell(s_robot.pos(), Cell::minotaur);
         s_maze.updateCell(s_minotaur.pos(), Cell::passage);
-        std::cout << "\nMinotaur have killed you...\nYou could have done better :(\n";
         return;
     }
 

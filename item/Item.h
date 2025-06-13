@@ -8,7 +8,6 @@ constexpr int g_itemDuration{ 3 };
 
 class Item {
 public:
-
     enum Type {
         sword,
         hammer,
@@ -17,17 +16,21 @@ public:
         max_types
     };
 
+protected:
+    // make it not possible to instantiate Item
     explicit Item(Type type)
         : m_type{ type }, m_duration{ g_itemDuration } {
     }
+    Item() = default;
 
+public:
     virtual ~Item() = default;
 
     virtual void use(Position pos) = 0;
 
     virtual std::string_view getStr() const = 0;
 
-    // return true if duration of item is expired
+    // return true if duration of the item is expired
     bool isBroken() const { return m_duration <= 0; }
 
     void reduceDuration() { --m_duration; }

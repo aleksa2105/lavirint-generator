@@ -5,7 +5,6 @@
 #include "../entity/Robot.h"
 #include "../entity/Minotaur.h"
 #include "../io/CLI.h"
-#include "../io/FileManager.h"
 #include "../maze/Maze.h"
 #include "../maze_generator/MazeGenerator.h"
 #include "../utils/Random.h"
@@ -14,7 +13,7 @@
 
 class Game {
 public:
-    Game(int argc, char* argv[], std::string_view fileName);
+    Game(int argc, char* argv[]);
 
     // main game loop
     void run();
@@ -37,7 +36,6 @@ private:
 
 private:
     MazeGenerator m_mazeGenerator;
-    FileManager m_fileManager;
     static Maze s_maze;
     static Robot s_robot;
     static Minotaur s_minotaur;

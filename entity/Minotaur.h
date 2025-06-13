@@ -15,7 +15,7 @@ public:
 
     void knockOut() { KODurationLeft = KODuration; }
     void reduceKODuration() {
-        std::cout << "\nMinotaur is knocked down for " << KOLeft() << " more move(s)\n\n";
+        std::cout << "\nMinotaur is knocked down for " << KOLeft() << " more move(s)\n";
         --KODurationLeft;
     }
     bool isKO() const { return KODurationLeft > 0; }
