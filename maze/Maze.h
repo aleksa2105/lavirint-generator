@@ -13,7 +13,7 @@ public:
     // check whether entity can move to given position
     bool isValidMove(Position pos);
 
-    void updateCells(Position cellPos1, Position cellPos2);
+    void swapCells(Position cellPos1, Position cellPos2);
 
     void updateCell(Position pos, Cell cell);
 

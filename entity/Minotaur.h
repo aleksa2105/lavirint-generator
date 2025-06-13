@@ -13,13 +13,15 @@ public:
 
     bool canMoveTo(Position newPos) override;
 
+    // Randomly move in one direction. 
+    // If robot is encountered, attack will be directed towards him
+    void move();
+
     void knockOut() { KODurationLeft = KODuration; }
-    void reduceKODuration() {
-        std::cout << "\nMinotaur is knocked down for " << KOLeft() << " more move(s)\n";
-        --KODurationLeft;
-    }
+
+    void reduceKODuration();
+
     bool isKO() const { return KODurationLeft > 0; }
-    int KOLeft() const { return KODurationLeft; }
 
 private:
     const int KODuration{ 2 };

@@ -1,122 +1,90 @@
 #include "Game.h"
-#include "../utils/Random.h"
-#include "../io/FileManager.h"
+
 #include <iostream>
-#include "../item/Sword.h"
-#include "../item/Shield.h"
+#include "../utils/Random.h"
+#include "../maze_generator/MazeGenerator.h"
 #include "../io/FileManager.h"
+#include "Helper.h"
+#include "../entity/Robot.h"
+#include "../entity/Minotaur.h"
+#include "../io/CLI.h"
 
-Game::Game(int argc, char* argv[])
-    : m_mazeGenerator{ Settings{handleArguments(argc, argv)} }
-{
-    init();
-}
 
-/* Initialize static members */
-Maze Game::s_maze;
-Robot Game::s_robot;
-Minotaur Game::s_minotaur;
+namespace Game {
 
-/* Setup maze */
-void Game::init() {
-    s_maze.setData(m_mazeGenerator.generate());
-    s_robot.setPosition(Helper::getRobotPosition(s_maze.enterPos()));
-    s_minotaur.setPosition(Helper::getMinotaurPosition(s_maze.numRows(), s_maze.numCols()));
+    /* Initialize static variables */
+    Maze s_maze;
+    Robot s_robot;
+    Minotaur s_minotaur;
 
-    s_maze.updateCell(s_robot.pos(), Cell::robot);
-    s_maze.updateCell(s_minotaur.pos(), Cell::minotaur);
-}
+    /* Setup maze */
+    void init(int argc, char* argv[]) {
+        MazeGenerator generator{ Settings{handleArguments(argc, argv)} };
 
-void Game::run() {
-    while (running()) {
+        s_maze.setData(generator.generate());
+        s_robot.setPosition(Helper::getRobotPosition(s_maze.enterPos()));
+        s_minotaur.setPosition(Helper::getMinotaurPosition(s_maze.numRows(), s_maze.numCols()));
+
+        s_maze.updateCell(s_robot.pos(), Cell::robot);
+        s_maze.updateCell(s_minotaur.pos(), Cell::minotaur);
+    }
+
+    void run() {
+        while (running()) {
+            CLI::display(s_maze);
+
+            robotTurn();
+            if (!running())
+                exit();
+            minotaurTurn();
+        }
+        exit();
+    }
+
+    bool running() {
+        return s_robot.isAlive() && s_robot.pos() != s_maze.exitPos();
+    }
+
+    void exit() {
         CLI::display(s_maze);
 
-        robotTurn();
-        if (!running())
-            exit();
-        minotaurTurn();
-    }
-    exit();
-}
+        // save to file
+        FileManager fileManager{ "output.txt" };
+        fileManager.save(s_maze);
+        fileManager.save("GENERATION-TIME: " + std::to_string(s_maze.generationTime()));
 
-bool Game::running() const {
-    return s_robot.isAlive() && s_robot.pos() != s_maze.exitPos();
-}
-
-void Game::exit() {
-    CLI::display(s_maze);
-
-    FileManager fileManager{ "output.txt" };
-
-    // save to file
-    fileManager.save(s_maze);
-    fileManager.save("GENERATION-TIME: " + std::to_string(s_maze.generationTime()));
-
-    std::exit(EXIT_SUCCESS);
-}
-
-void Game::robotTurn() {
-    char userInput{ CLI::getUserInput() };
-
-    if (tolower(userInput) == 'q') { exit(); }
-
-    std::optional<Direction> dir{ directionFromChar(userInput) };
-
-    if (dir) {
-        Position newPos{ s_robot.pos() + dir.value() };
-        // before moving let item do its job
-        s_robot.useItem(newPos);
-        s_robot.move(newPos);
-    }
-    else {
-        std::cout << "\nInvalid input\n";
-    }
-}
-
-void Game::minotaurTurn() {
-
-    if (s_minotaur.isKO()) {
-        s_minotaur.reduceKODuration();
-        return;
-    }
-    if (!s_minotaur.isAlive() || !s_robot.isAlive()) {
-        return;
+        std::exit(EXIT_SUCCESS);
     }
 
-    int minotaurX{ s_minotaur.pos().x };
-    int minotaurY{ s_minotaur.pos().y };
-    int robotX{ s_robot.pos().x };
-    int robotY{ s_robot.pos().y };
+    void robotTurn() {
+        char userInput{ CLI::getUserInput() };
 
-    // try to kill robot if near
-    if ((abs(minotaurX - robotX) == 1 && abs(minotaurY - robotY) == 0) || (abs(minotaurX - robotX) == 0 && abs(minotaurY - robotY) == 1)) {
-        s_robot.defend();
+        if (tolower(userInput) == 'q') { exit(); }
 
-        if (!s_minotaur.isAlive() || s_minotaur.isKO())
-            // robot defended successfully
+        std::optional<Direction> dir{ directionFromChar(userInput) };
+
+        if (dir) {
+            Position newPos{ s_robot.pos() + dir.value() };
+            // before moving let item do its job
+            s_robot.useItem(newPos);
+            s_robot.move(newPos);
+        }
+        else {
+            std::cout << "\nInvalid input\n";
+        }
+    }
+
+    void minotaurTurn() {
+
+        if (s_minotaur.isKO()) {
+            s_minotaur.reduceKODuration();
             return;
+        }
+        if (!s_minotaur.isAlive() || !s_robot.isAlive()) {
+            return;
+        }
 
-        // robot failed to defend. update maze cells and return
-        s_maze.updateCell(s_robot.pos(), Cell::minotaur);
-        s_maze.updateCell(s_minotaur.pos(), Cell::passage);
-        return;
+        s_minotaur.move();
     }
 
-    // add all available directions to vector and select one randomly
-    std::vector<Direction> availableDir{};
-    Position curPos{ s_minotaur.pos() };
-    if (s_minotaur.canMoveTo(curPos + Direction{ 0, -1 })) availableDir.emplace_back(0, -1); // north
-    if (s_minotaur.canMoveTo(curPos + Direction{ 0, 1 })) availableDir.emplace_back(0, 1); // south
-    if (s_minotaur.canMoveTo(curPos + Direction{ -1, 0 })) availableDir.emplace_back(-1, 0); // west
-    if (s_minotaur.canMoveTo(curPos + Direction{ 1, 0 })) availableDir.emplace_back(1, 0); // east
-
-    // randomly select direction
-    int randIdx = Random::get(0, static_cast<int>(availableDir.size()) - 1);
-    Direction dir = availableDir[randIdx];
-    Position newPos{ curPos + dir };
-
-    // update maze and minotaur data
-    s_maze.updateCells(curPos, newPos);
-    s_minotaur.setPosition(newPos);
-}
-
+} // namespace Game

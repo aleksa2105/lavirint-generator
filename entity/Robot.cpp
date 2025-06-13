@@ -8,7 +8,7 @@
 
 
 bool Robot::canMoveTo(Position newPos) {
-    if (newPos == Game::maze().exitPos() || Game::maze().isValidMove(newPos)) {
+    if (newPos == Game::s_maze.exitPos() || Game::s_maze.isValidMove(newPos)) {
         return true;
     }
     return false;
@@ -33,8 +33,8 @@ void Robot::pickupItem(std::unique_ptr<Item> item) {
 }
 
 void Robot::move(Position newPos) {
-    Maze& maze{ Game::maze() };
-    Minotaur& minotaur{ Game::minotaur() };
+    Maze& maze{ Game::s_maze };
+    Minotaur& minotaur{ Game::s_minotaur };
 
     if (canMoveTo(newPos)) {
         Cell cell{ maze.cellAt(newPos) };
@@ -44,6 +44,8 @@ void Robot::move(Position newPos) {
             pickupItem(getRandomItem());
         }
         // encounter minotaur when he is ready to attack
+        // since item is used before robot's move,
+        // but minotaur is still alive it means that robot didn't have proper item at proper time
         else if (cell == Cell::minotaur && !minotaur.isKO() && minotaur.isAlive()) {
             kill();
             maze.updateCell(pos(), Cell::passage);
@@ -59,14 +61,14 @@ void Robot::move(Position newPos) {
             std::cout << "\nYou have won!!\n";
         }
 
-        maze.updateCells(pos(), newPos);
+        maze.swapCells(pos(), newPos);
         setPosition(newPos);
         return;
     }
 }
 
 void Robot::defend() {
-    Minotaur& minotaur{ Game::minotaur() };
+    Minotaur& minotaur{ Game::s_minotaur };
     if (m_activeItem) {
         m_activeItem->use(minotaur.pos());
         if (!minotaur.isAlive() || minotaur.isKO()) {

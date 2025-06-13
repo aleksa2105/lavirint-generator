@@ -4,6 +4,6 @@
 
 int main(int argc, char* argv[])
 {
-    Game game{ argc, argv };
-    game.run();
+    Game::init(argc, argv);
+    Game::run();
 }

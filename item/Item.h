@@ -21,6 +21,7 @@ protected:
     explicit Item(Type type)
         : m_type{ type }, m_duration{ g_itemDuration } {
     }
+
     Item() = default;
 
 public:
@@ -28,14 +29,14 @@ public:
 
     virtual void use(Position pos) = 0;
 
-    virtual std::string_view getStr() const = 0;
-
     // return true if duration of the item is expired
     bool isBroken() const { return m_duration <= 0; }
 
+    int duration() const { return m_duration; }
+
     void reduceDuration() { --m_duration; }
 
-    int duration() const { return m_duration; }
+    virtual std::string_view getStr() const = 0;
 
     friend std::ostream& operator<<(std::ostream& out, const Item& item);
 

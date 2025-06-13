@@ -9,6 +9,7 @@ protected:
     explicit Entity(Position pos)
         : m_pos{ pos }, m_isAlive{ true } {
     }
+
     Entity() = default;
 
 public:
@@ -22,6 +23,7 @@ public:
     void kill() { m_isAlive = false; }
 
     Position pos() const { return m_pos; }
+
     bool isAlive() const { return m_isAlive; }
 
 protected:

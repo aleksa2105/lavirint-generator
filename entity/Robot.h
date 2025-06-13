@@ -22,9 +22,9 @@ public:
 
     void move(Position pos);
 
+    // Defend against minotaur's attack with active items.
     void defend();
 
-    /* access methods */
     Item* activeItem() { return m_activeItem.get(); }
 
 private:

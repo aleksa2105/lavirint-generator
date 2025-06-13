@@ -12,8 +12,6 @@ constexpr int g_maxCols{ 75 };
 constexpr int g_minItems{ 3 };
 constexpr int g_maxItems{ 30 };
 
-constexpr int g_consoleLines{ 25 }; // number of new lines for console clearing
-
 /* ------------------------- */
 
 struct Settings {

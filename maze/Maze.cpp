@@ -21,19 +21,20 @@ bool Maze::isValidMove(Position pos) {
     return true;
 }
 
-void Maze::updateCells(Position cellPos1, Position cellPos2) {
+void Maze::swapCells(Position cellPos1, Position cellPos2) {
+
     Cell& cell1{ (*this)[cellPos1] };
     Cell& cell2{ (*this)[cellPos2] };
 
     // cell2 is entity
     if (cell1 == Cell::item || cell1 == Cell::exit) {
         cell1 = cell2;
-        cell2 = Cell::passage;
+        cell2 = Cell::passage; // destroy item/exit
     }
     // cell1 is entity
     else if (cell2 == Cell::item || cell2 == Cell::exit) {
         cell2 = cell1;
-        cell1 = Cell::passage;
+        cell1 = Cell::passage; // destroy item/exit
     }
     else {
         Cell temp{ cell1 };
@@ -58,11 +59,7 @@ Cell& Maze::operator[](const Position& pos) {
 }
 
 std::ostream& operator<< (std::ostream& out, const Maze& maze) {
-    // clear console
-    // for (int i{ 0 }; i < g_consoleLines; ++i)
-    //     out << '\n';
-
-    Robot& robot{ Game::robot() };
+    Robot& robot{ Game::s_robot };
 
     for (int y{ 0 }; y < maze.numRows(); ++y) {
         for (int x{ 0 }; x < maze.numCols(); ++x) {
