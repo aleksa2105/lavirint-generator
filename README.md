@@ -38,6 +38,10 @@ Ovaj projekat je razvijen kao ispitna obaveza u okviru kursa **Objektno orijenti
 > ./build/maze 25 25 5
 > ```
 
+Za pregled sačuvanog stanja lavirinta pogledati
+```
+./build/output.txt
+```
 ---
 
 ## ⌨️ Komande
