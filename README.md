@@ -29,13 +29,13 @@ Ovaj projekat je razvijen kao ispitna obaveza u okviru kursa **Objektno orijenti
 ## 🚀 Pokretanje igre
 
 ```
-./robot_game <broj_redova> <broj_kolona> <broj_predmeta>
+./build/maze <broj_redova> <broj_kolona> <broj_predmeta>
 ```
 
 > Primer:
 >
 > ```bash
-> ./robot_game 25 25 5
+> ./build/maze 25 25 5
 > ```
 
 ---
