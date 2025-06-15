@@ -28,15 +28,24 @@ Ovaj projekat je razvijen kao ispitna obaveza u okviru kursa **Objektno orijenti
 
 ## 🚀 Pokretanje igre
 
+Nakon što preuzmete repozitorijum, potrebno je da izgradite izvršni fajl pomoću `cmake`:
+
+> ```bash
+> mkdir build
+> cd build
+> cmake ..
+> make
+> ```
+
+Potom pokrenite igru (iz build/ direktorijuma)
 ```
-./build/maze <broj_redova> <broj_kolona> <broj_predmeta>
+./maze <broj_redova> <broj_kolona> <broj_predmeta>
 ```
 
-> Primer:
->
-> ```bash
-> ./build/maze 25 25 5
-> ```
+Primjer
+```
+./maze 20 20 12
+```
 
 ---
 
