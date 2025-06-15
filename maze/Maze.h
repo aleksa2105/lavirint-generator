@@ -11,7 +11,7 @@ public:
     Maze() = default;
 
     // check whether entity can move to given position
-    bool isValidMove(Position pos);
+    bool isWalkable(Position pos);
 
     void swapCells(Position cellPos1, Position cellPos2);
 

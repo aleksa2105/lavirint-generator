@@ -13,6 +13,7 @@ namespace Game {
 
     bool running();
 
+    // save final state of the maze to a file and close the application
     void exit();
 
     void robotTurn();

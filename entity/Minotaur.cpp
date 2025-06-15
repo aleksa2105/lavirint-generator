@@ -4,7 +4,7 @@
 
 
 bool Minotaur::canMoveTo(Position newPos) {
-    if (Game::s_maze.isValidMove(newPos)) {
+    if (Game::s_maze.isWalkable(newPos)) {
         return true;
     }
 

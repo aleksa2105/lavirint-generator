@@ -1,4 +1,5 @@
 #pragma once
+#include "../utils/Color.h"
 
 enum class Cell
 {
@@ -22,5 +23,16 @@ inline char cellToChar(Cell cell)
     case Cell::robot: return 'R';
     case Cell::minotaur: return 'M';
     default: return '?';
+    }
+}
+
+inline const char* cellTypeColor(Cell cell) {
+    switch (cell)
+    {
+    case Cell::robot: return YELLOW;
+    case Cell::item: return CYAN;
+    case Cell::minotaur: return RED;
+    case Cell::wall: return MAGENTA;
+    default: return RESET;
     }
 }

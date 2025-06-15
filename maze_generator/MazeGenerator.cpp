@@ -33,8 +33,8 @@ MazeData MazeGenerator::generate() {
         if (!dir.has_value()) // no direction is available for position
             backtrack.pop();
         else {
-            pos += dir.value();
             carvePath(pos, dir.value());
+            pos += dir.value();
             backtrack.push(pos);
         }
     }
@@ -49,8 +49,8 @@ MazeData MazeGenerator::generate() {
 }
 
 void MazeGenerator::carvePath(Position pos, Direction dir) {
-    m_data.matrix[pos.y][pos.x] = Cell::passage;
-    m_data.matrix[pos.y - dir.dy / 2][pos.x - dir.dx / 2] = Cell::passage; // in opposite direction than dir, mark cell as path
+    m_data.matrix[pos.y + dir.dy][pos.x + dir.dx] = Cell::passage;
+    m_data.matrix[pos.y + dir.dy / 2][pos.x + dir.dx / 2] = Cell::passage;
 }
 
 std::optional<Direction> MazeGenerator::randomDirection(Position pos) {

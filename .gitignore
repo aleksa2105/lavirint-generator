@@ -2,6 +2,7 @@
 build/
 .vscode
 .vs
+.benchmark
 
 *.exe
 *.tmp

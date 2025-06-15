@@ -1,7 +1,6 @@
 #include "Maze.h"
 #include <ostream>
 #include <fstream>
-#include "../utils/Utils.h"
 #include "../game/Game.h"
 #include "../item/Fog.h"
 
@@ -10,7 +9,7 @@ Maze::Maze(MazeData data)
     : m_data{ data } {
 }
 
-bool Maze::isValidMove(Position pos) {
+bool Maze::isWalkable(Position pos) {
     Cell cell{ (*this)[pos] };
 
     if (!isWithinBounds(pos)) // out of maze bounds
@@ -65,11 +64,11 @@ std::ostream& operator<< (std::ostream& out, const Maze& maze) {
         for (int x{ 0 }; x < maze.numCols(); ++x) {
             // check if robot has fog item active
             if (dynamic_cast<Fog*>(robot.activeItem()) && (abs(robot.pos().x - x) > 1 || abs(robot.pos().y - y) > 1)) {
-                out << Utils::cellTypeColor(Cell::wall) << cellToChar(Cell::wall) << RESET << ' ';
+                out << cellTypeColor(Cell::wall) << cellToChar(Cell::wall) << RESET << ' ';
             }
             else {
                 Cell cellType = maze.cellAt({ x, y });
-                out << Utils::cellTypeColor(cellType) << cellToChar(cellType) << RESET << ' ';
+                out << cellTypeColor(cellType) << cellToChar(cellType) << RESET << ' ';
             }
         }
         out << '\n';

@@ -12,6 +12,4 @@ public:
     std::string_view getStr() const override {
         return "Shield";
     }
-
-private:
 };

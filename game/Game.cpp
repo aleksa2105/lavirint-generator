@@ -49,7 +49,7 @@ namespace Game {
         CLI::display(s_maze);
 
         // save to file
-        FileManager fileManager{ "output.txt" };
+        FileManager fileManager{ "build/output.txt" };
         fileManager.save(s_maze);
         fileManager.save("GENERATION-TIME: " + std::to_string(s_maze.generationTime()));
 

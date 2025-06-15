@@ -9,7 +9,4 @@ public:
     void use(Position pos) override;
 
     std::string_view getStr() const override { return "Sword"; }
-
-private:
-
 };

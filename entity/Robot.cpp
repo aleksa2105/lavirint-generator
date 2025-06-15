@@ -8,7 +8,7 @@
 
 
 bool Robot::canMoveTo(Position newPos) {
-    if (newPos == Game::s_maze.exitPos() || Game::s_maze.isValidMove(newPos)) {
+    if (newPos == Game::s_maze.exitPos() || Game::s_maze.isWalkable(newPos)) {
         return true;
     }
     return false;
@@ -44,8 +44,8 @@ void Robot::move(Position newPos) {
             pickupItem(getRandomItem());
         }
         // encounter minotaur when he is ready to attack
-        // since item is used before robot's move,
-        // but minotaur is still alive it means that robot didn't have proper item at proper time
+        // since item is used before robot's move but minotaur is still alive,
+        // it means that robot didn't have proper item at proper time
         else if (cell == Cell::minotaur && !minotaur.isKO() && minotaur.isAlive()) {
             kill();
             maze.updateCell(pos(), Cell::passage);
