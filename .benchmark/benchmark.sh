@@ -7,13 +7,10 @@
 
 # Path to executable
 EXEC="build/maze"
-
-# Output file for benchmark
-RESULT_FILE=".benchmark/benchmark.csv"
+RESULT_FILE=".benchmark/benchmark.csv" # Output file for benchmark
 echo "rows,cols,items,time" > $RESULT_FILE
 
-# Temporary file that saves generation time
-TIME_FILE=".benchmark/time.txt"
+TIME_FILE=".benchmark/time.txt" # Temporary file that saves generation time for each run
 
 # Loop through different sizes
 for rows in {15..515..50}; do
