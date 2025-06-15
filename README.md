@@ -103,29 +103,18 @@ project/
 
 ---
 
-## 🔬 Arhitektura i klase
-
-- ``  — x,y koordinate sa podrškom za operatore `+`, `+=`, `==`
-- ``      — glavna petlja igre, obrada korisnikovog i Minotaurovog poteza
-- ``      — bazna apstraktna klasa; nasleđuju je `Hammer`, `Sword`, itd.
-- `` — dinamička izgradnja lavirinta (backtracking)
-- ``   — upravljanje zapisom u fajl
-- ``          — logika polja, validacija kretanja, detekcija entiteta
-
----
-
 ## 📊 Performanse
 
 - **Linearna zavisnost** vremena generacije od veličine lavirinta
-- Broj predmeta ima manji uticaj
 - Algoritam koristi stack-based backtracking
+- Za testiranje performansi generisanja postoji shell skripta unutar .benchmark/ foldera
 
 ---
 
 ## 🔧 Testiranje
 
 - Validacija neispravnih argumenata
-- Minimalne dozvoljene dimenzije
+- Minimalne/maksimalne dozvoljene dimenzije
 - Interakcije robot/Minotaur sa i bez predmeta
 - Robusno ponašanje sistema pri svim ulazima
 
@@ -142,16 +131,26 @@ project/
 ## 📁 Output primer
 
 ```
-Game over: Robot reached the exit!
+# # # # # # # # # # # # # # # E # # 
+# . # . . . . . . . . . . . . . # # 
+# . # . # # . . . . # # # # # . # # 
+# . . . # . . . . . # . . . . . # # 
+# . # # # . # . # . # . # # # . # # 
+# . # . . . # . # . # . # . . . # # 
+# . # . . # # . # . # . . . . . # # 
+# . # . . . . . . . # . . . # . # # 
+# . # # # ? . . # . . . # . # . # # 
+# . . . . . # . . . . . # . # . # # 
+# # # . # . # # # . # . . . . . # # 
+# . # . # . . . # . # . # . . . # # 
+# . # . . . # . # # # . # . . . # # 
+# ? # . . . # . . . . . # . . . # # 
+# . # # # . . # # . # # # # # . # # 
+# . . . . . . . . . . . . M . . # # 
+# . . . . . . . . . . . . . . . . # 
+# # # # # R # # # # # # # # # # # # 
 
-#### Final Maze State:
-#####################
-#E.....#....?...#..X
-#.#.###.##.#.##.#.#.
-...M........#...#..#
-...#.#.#.#.#####.#..
-#R...........#.#....
-#####################
+GENERATION-TIME: 0.000005
 ```
 
 ---
