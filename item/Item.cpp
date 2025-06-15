@@ -1,11 +1,15 @@
 #include "Item.h"
+
+#include <functional>
+#include <ostream>
+#include <array>
 #include "../utils/Random.h"
 #include "Sword.h"
 #include "Hammer.h"
 #include "Shield.h"
 #include "Fog.h"
-#include <functional>
-#include <ostream>
+
+
 
 std::unique_ptr<Item> getRandomItem() {
     std::array<std::function<std::unique_ptr<Item>()>, Item::max_types> items{

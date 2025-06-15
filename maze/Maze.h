@@ -25,10 +25,10 @@ public:
     Cell& operator[](const Position& pos);
 
     /* access methods */
-    int numRows() const { return m_data.matrix.size(); }
-    int numCols() const { return m_data.matrix[0].size(); }
-    int borderY() const { return m_data.matrix.size() - 1; }
-    int borderX() const { return m_data.matrix[0].size() - 1; }
+    int numRows() const { return static_cast<int>(m_data.matrix.size()); }
+    int numCols() const { return static_cast<int>(m_data.matrix[0].size()); }
+    int borderY() const { return static_cast<int>(m_data.matrix.size()) - 1; }
+    int borderX() const { return static_cast<int>(m_data.matrix[0].size()) - 1; }
     Position enterPos() const { return m_data.enter; }
     Position exitPos() const { return m_data.exit; }
     double generationTime() const { return m_data.generationTime; }
