@@ -16,8 +16,7 @@ public:
         max_types
     };
 
-protected:
-    // make it not possible to instantiate Item
+protected: // make it not possible to instantiate Item
     explicit Item(Type type)
         : m_type{ type }, m_duration{ g_itemDuration } {
     }

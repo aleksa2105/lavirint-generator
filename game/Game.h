@@ -6,6 +6,8 @@
 
 
 namespace Game {
+
+    // generate maze and initialize entities
     void init(int argc, char* argv[]);
 
     // main game loop

@@ -5,8 +5,7 @@
 
 
 class Entity {
-protected:
-    // make it not possible to instantiate Entity
+protected: // make it not possible to instantiate Entity
     explicit Entity(Lib::Position pos)
         : m_pos{ pos }, m_isAlive{ true } {
     }
@@ -23,9 +22,9 @@ public:
 
     void kill() { m_isAlive = false; }
 
-    Lib::Position pos() const { return m_pos; }
-
     bool isAlive() const { return m_isAlive; }
+
+    Lib::Position pos() const { return m_pos; }
 
 protected:
     Lib::Position m_pos;

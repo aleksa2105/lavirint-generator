@@ -21,14 +21,14 @@ void Robot::useItem(Lib::Position pos) {
         }
         else {
             m_activeItem->use(pos);
-            m_activeItem->reduceDuration();
+            m_activeItem->reduceDuration(); // after each use, reduce item's duration
             m_activeItem->isBroken() ? std::cout << "\nYour item has broken.\n" : std::cout << "\n{Active item: " << *m_activeItem << "}\n";
         }
     }
 }
 
 void Robot::pickupItem(std::unique_ptr<Item> item) {
-    m_activeItem = std::move(item);
+    m_activeItem = std::move(item); // take ownership of passed item
     std::cout << "\nYou have picked up: " << m_activeItem->getStr() << '\n';
 }
 
@@ -43,6 +43,10 @@ void Robot::move(Lib::Position newPos) {
         if (cell == Lib::Cell::item) {
             pickupItem(getRandomItem());
         }
+        // found exit
+        else if (cell == Lib::Cell::exit) {
+            std::cout << "\nYou have won!!\n";
+        }
         // encounter minotaur when he is ready to attack
         // since item is used before robot's move but minotaur is still alive,
         // it means that robot didn't have proper item at proper time
@@ -56,11 +60,8 @@ void Robot::move(Lib::Position newPos) {
         else if (cell == Lib::Cell::minotaur && minotaur.isKO()) {
             return; // don't move the robot, just return
         }
-        // found exit
-        else if (cell == Lib::Cell::exit) {
-            std::cout << "\nYou have won!!\n";
-        }
 
+        // update maze cells and robot's position
         maze.swapCells(pos(), newPos);
         setPosition(newPos);
         return;
@@ -72,10 +73,11 @@ void Robot::defend() {
     if (m_activeItem) {
         m_activeItem->use(minotaur.pos());
         if (!minotaur.isAlive() || minotaur.isKO()) {
-            return;
+            return; // return if robot defended successfully
         }
     }
-    kill();
+
+    kill(); // robot failed to defend
     std::cout << "\nYou have died against minotaur's attack.\n";
     std::cout << "Game's over...\n";
 }

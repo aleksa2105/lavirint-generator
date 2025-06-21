@@ -3,6 +3,7 @@
 #include <limits>
 
 char CLI::getUserInput() {
+    // while user doesn't provide good input
     while (true) {
         display("w,a,s,d or q to exit: ");
         char in{};

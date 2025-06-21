@@ -1,7 +1,8 @@
 
 build/
-.vscode
-.vs
+.vscode/
+.vs/
+.benchmark/
 
 *.exe
 *.tmp

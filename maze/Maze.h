@@ -25,10 +25,10 @@ public:
     Lib::Cell& operator[](const Lib::Position& pos);
 
     /* access methods */
-    int numRows() const { return m_data.matrix.size(); }
-    int numCols() const { return m_data.matrix[0].size(); }
-    int borderY() const { return m_data.matrix.size() - 1; }
-    int borderX() const { return m_data.matrix[0].size() - 1; }
+    int numRows() const { return static_cast<int>(m_data.matrix.size()); }
+    int numCols() const { return static_cast<int>(m_data.matrix[0].size()); }
+    int borderY() const { return static_cast<int>(m_data.matrix.size()) - 1; }
+    int borderX() const { return static_cast<int>(m_data.matrix[0].size()) - 1; }
     Lib::Position enterPos() const { return m_data.enter; }
     Lib::Position exitPos() const { return m_data.exit; }
     Lib::Cell cellAt(Lib::Position pos) const { return m_data.matrix[pos.y][pos.x]; }

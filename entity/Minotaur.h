@@ -17,6 +17,7 @@ public:
     // If robot is encountered, attack will be directed towards him
     void move();
 
+    // pause minotaur's movement for @KODuration moves
     void knockOut() { KODurationLeft = KODuration; }
 
     void reduceKODuration();
