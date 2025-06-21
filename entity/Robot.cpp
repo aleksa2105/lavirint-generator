@@ -7,14 +7,14 @@
 #include "../game/Game.h"
 
 
-bool Robot::canMoveTo(Position newPos) {
+bool Robot::canMoveTo(Lib::Position newPos) {
     if (newPos == Game::s_maze.exitPos() || Game::s_maze.isWalkable(newPos)) {
         return true;
     }
     return false;
 }
 
-void Robot::useItem(Position pos) {
+void Robot::useItem(Lib::Position pos) {
     if (m_activeItem) {
         if (m_activeItem->isBroken()) {
             m_activeItem = nullptr;
@@ -32,32 +32,32 @@ void Robot::pickupItem(std::unique_ptr<Item> item) {
     std::cout << "\nYou have picked up: " << m_activeItem->getStr() << '\n';
 }
 
-void Robot::move(Position newPos) {
+void Robot::move(Lib::Position newPos) {
     Maze& maze{ Game::s_maze };
     Minotaur& minotaur{ Game::s_minotaur };
 
     if (canMoveTo(newPos)) {
-        Cell cell{ maze.cellAt(newPos) };
+        Lib::Cell cell{ maze.cellAt(newPos) };
 
         // encounter item
-        if (cell == Cell::item) {
+        if (cell == Lib::Cell::item) {
             pickupItem(getRandomItem());
         }
         // encounter minotaur when he is ready to attack
         // since item is used before robot's move but minotaur is still alive,
         // it means that robot didn't have proper item at proper time
-        else if (cell == Cell::minotaur && !minotaur.isKO() && minotaur.isAlive()) {
+        else if (cell == Lib::Cell::minotaur && !minotaur.isKO() && minotaur.isAlive()) {
             kill();
-            maze.updateCell(pos(), Cell::passage);
+            maze.updateCell(pos(), Lib::Cell::passage);
             std::cout << "\nYou have died. GG\n";
             return;
         }
         // encounter minotaur when he is knocked out
-        else if (cell == Cell::minotaur && minotaur.isKO()) {
+        else if (cell == Lib::Cell::minotaur && minotaur.isKO()) {
             return; // don't move the robot, just return
         }
         // found exit
-        else if (cell == Cell::exit) {
+        else if (cell == Lib::Cell::exit) {
             std::cout << "\nYou have won!!\n";
         }
 

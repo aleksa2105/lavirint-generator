@@ -6,7 +6,7 @@ public:
         : Item{ Type::sword } {
     }
 
-    void use(Position pos) override;
+    void use(Lib::Position pos) override;
 
     std::string_view getStr() const override { return "Sword"; }
 };

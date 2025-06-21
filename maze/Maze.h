@@ -1,40 +1,42 @@
 #pragma once
 #include <vector>
-#include "../maze_generator/MazeGenerator.h"
-#include "../common/Position.h"
+#include "maze_generator/MazeGenerator.h"
+#include "common/Position.h"
 
 
 class Maze {
 public:
-    explicit Maze(MazeData data);
+    explicit Maze(Lib::MazeData data);
 
     Maze() = default;
 
     // check whether entity can move to given position
-    bool isWalkable(Position pos);
+    bool isWalkable(Lib::Position pos);
 
-    void swapCells(Position cellPos1, Position cellPos2);
+    void swapCells(Lib::Position cellPos1, Lib::Position cellPos2);
 
-    void updateCell(Position pos, Cell cell);
+    void updateCell(Lib::Position pos, Lib::Cell cell);
 
     // check whether position is within maze bounds
-    bool isWithinBounds(Position pos) const;
+    bool isWithinBounds(Lib::Position pos) const;
 
     friend std::ostream& operator<< (std::ostream& out, const Maze& maze);
     friend std::ofstream& operator<< (std::ofstream& out, const Maze& maze);
-    Cell& operator[](const Position& pos);
+    Lib::Cell& operator[](const Lib::Position& pos);
 
     /* access methods */
     int numRows() const { return m_data.matrix.size(); }
     int numCols() const { return m_data.matrix[0].size(); }
     int borderY() const { return m_data.matrix.size() - 1; }
     int borderX() const { return m_data.matrix[0].size() - 1; }
-    Position enterPos() const { return m_data.enter; }
-    Position exitPos() const { return m_data.exit; }
-    double generationTime() const { return m_data.generationTime; }
-    Cell cellAt(Position pos) const { return m_data.matrix[pos.y][pos.x]; }
-    void setData(MazeData data) { m_data = std::move(data); }
+    Lib::Position enterPos() const { return m_data.enter; }
+    Lib::Position exitPos() const { return m_data.exit; }
+    Lib::Cell cellAt(Lib::Position pos) const { return m_data.matrix[pos.y][pos.x]; }
+    void setData(Lib::MazeData data) { m_data = std::move(data); }
+    double generationTime() const { return m_generationTime; }
+    void setGenerationTime(double time) { m_generationTime = time; }
 
 private:
-    MazeData m_data;
+    Lib::MazeData m_data;
+    double m_generationTime{ 0 };
 };

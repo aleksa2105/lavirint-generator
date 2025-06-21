@@ -1,5 +1,5 @@
 #include "Item.h"
-#include "../utils/Random.h"
+#include "utils/Random.h"
 #include "Sword.h"
 #include "Hammer.h"
 #include "Shield.h"

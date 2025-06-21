@@ -1,8 +1,8 @@
 #include "Game.h"
 
 #include <iostream>
-#include "../utils/Random.h"
-#include "../maze_generator/MazeGenerator.h"
+#include "utils/Random.h"
+#include "maze_generator/MazeGenerator.h"
 #include "../io/FileManager.h"
 #include "Helper.h"
 #include "../entity/Robot.h"
@@ -19,14 +19,15 @@ namespace Game {
 
     /* Setup maze */
     void init(int argc, char* argv[]) {
-        MazeGenerator generator{ Settings{handleArguments(argc, argv)} };
+        Lib::MazeGenerator generator{ Lib::Settings{Lib::handleArguments(argc, argv)} };
 
         s_maze.setData(generator.generate());
         s_robot.setPosition(Helper::getRobotPosition(s_maze.enterPos()));
         s_minotaur.setPosition(Helper::getMinotaurPosition(s_maze.numRows(), s_maze.numCols()));
 
-        s_maze.updateCell(s_robot.pos(), Cell::robot);
-        s_maze.updateCell(s_minotaur.pos(), Cell::minotaur);
+        s_maze.updateCell(s_robot.pos(), Lib::Cell::robot);
+        s_maze.updateCell(s_minotaur.pos(), Lib::Cell::minotaur);
+        s_maze.setGenerationTime(generator.generationTime());
     }
 
     void run() {
@@ -49,7 +50,7 @@ namespace Game {
         CLI::display(s_maze);
 
         // save to file
-        FileManager fileManager{ "build/output.txt" };
+        FileManager fileManager{ "output.txt" };
         fileManager.save(s_maze);
         fileManager.save("GENERATION-TIME: " + std::to_string(s_maze.generationTime()));
 
@@ -61,10 +62,10 @@ namespace Game {
 
         if (tolower(userInput) == 'q') { exit(); }
 
-        std::optional<Direction> dir{ directionFromChar(userInput) };
+        std::optional<Lib::Direction> dir{ Lib::directionFromChar(userInput) };
 
         if (dir) {
-            Position newPos{ s_robot.pos() + dir.value() };
+            Lib::Position newPos{ s_robot.pos() + dir.value() };
             // before moving let item do its job
             s_robot.useItem(newPos);
             s_robot.move(newPos);

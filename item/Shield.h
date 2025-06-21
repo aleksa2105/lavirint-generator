@@ -7,7 +7,7 @@ public:
         : Item{ Type::shield } {
     }
 
-    void use(Position pos);
+    void use(Lib::Position pos);
 
     std::string_view getStr() const override {
         return "Shield";

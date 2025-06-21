@@ -5,13 +5,13 @@
 
 class Minotaur : public Entity {
 public:
-    explicit Minotaur(Position pos)
+    explicit Minotaur(Lib::Position pos)
         : Entity{ pos } {
     }
 
     Minotaur() = default;
 
-    bool canMoveTo(Position newPos) override;
+    bool canMoveTo(Lib::Position newPos) override;
 
     // Randomly move in one direction. 
     // If robot is encountered, attack will be directed towards him

@@ -2,6 +2,6 @@
 #include "../game/Game.h"
 
 
-void Fog::use(Position pos) {
+void Fog::use(Lib::Position pos) {
     return;
 }

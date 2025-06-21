@@ -1,7 +1,7 @@
 #pragma once
 #include <string_view>
 #include <memory>
-#include "../common/Position.h"
+#include "common/Position.h"
 
 constexpr int g_itemDuration{ 3 };
 
@@ -27,7 +27,7 @@ protected:
 public:
     virtual ~Item() = default;
 
-    virtual void use(Position pos) = 0;
+    virtual void use(Lib::Position pos) = 0;
 
     // return true if duration of the item is expired
     bool isBroken() const { return m_duration <= 0; }

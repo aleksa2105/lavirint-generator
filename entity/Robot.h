@@ -8,19 +8,19 @@
 
 class Robot : public Entity {
 public:
-    explicit Robot(Position pos)
+    explicit Robot(Lib::Position pos)
         : Entity{ pos } {
     }
 
     Robot() = default;
 
-    bool canMoveTo(Position newPos) override;
+    bool canMoveTo(Lib::Position newPos) override;
 
     void pickupItem(std::unique_ptr<Item> item);
 
-    void useItem(Position pos);
+    void useItem(Lib::Position pos);
 
-    void move(Position pos);
+    void move(Lib::Position pos);
 
     // Defend against minotaur's attack with active items.
     void defend();
