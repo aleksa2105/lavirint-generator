@@ -76,7 +76,6 @@ namespace Game {
     }
 
     void minotaurTurn() {
-
         if (s_minotaur.isKO()) {
             s_minotaur.reduceKODuration();
             return;

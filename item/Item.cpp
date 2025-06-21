@@ -5,7 +5,10 @@
 #include "Shield.h"
 #include "Fog.h"
 #include <functional>
+#include <array>
 #include <ostream>
+
+
 
 std::unique_ptr<Item> getRandomItem() {
     std::array<std::function<std::unique_ptr<Item>()>, Item::max_types> items{
