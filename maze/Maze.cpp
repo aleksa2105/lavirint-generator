@@ -64,7 +64,9 @@ std::ostream& operator<< (std::ostream& out, const Maze& maze) {
     for (int y{ 0 }; y < maze.numRows(); ++y) {
         for (int x{ 0 }; x < maze.numCols(); ++x) {
             // check if robot has fog item active
-            if (dynamic_cast<Fog*>(robot.activeItem()) && (abs(robot.pos().x - x) > 1 || abs(robot.pos().y - y) > 1)) {
+            if (dynamic_cast<Fog*>(robot.activeItem()) &&
+                robot.activeItem()->duration() > 0 &&
+                (abs(robot.pos().x - x) > 1 || abs(robot.pos().y - y) > 1)) {
                 out << Lib::cellTypeColor(Lib::Cell::wall) << Lib::cellToChar(Lib::Cell::wall) << RESET << ' ';
             }
             else {
